@@ -1,36 +1,95 @@
-import { useMemo, useState, type ChangeEvent } from "react";
+import { useMemo, useState, type ChangeEvent } from 'react';
 
-const items = [
-  { id: 1, name: "Maçã" },
-  { id: 2, name: "Banana" },
-  { id: 3, name: "Laranja" },
-  { id: 4, name: "Abacaxi" },
-  { id: 5, name: "Morango" },
-  { id: 6, name: "Manga" },
+const products = [
+  {
+    id: 1,
+    name: 'Notebook Dell',
+    price: 2599.99,
+    category: 'Eletrônicos',
+    inStock: true,
+  },
+  {
+    id: 2,
+    name: 'Mouse Logitech',
+    price: 89.9,
+    category: 'Periféricos',
+    inStock: false,
+  },
+  {
+    id: 3,
+    name: 'Teclado Mecânico',
+    price: 299.99,
+    category: 'Periféricos',
+    inStock: true,
+  },
+  {
+    id: 4,
+    name: 'Monitor 4K',
+    price: 1299.0,
+    category: 'Eletrônicos',
+    inStock: true,
+  },
+  {
+    id: 5,
+    name: 'Webcam HD',
+    price: 159.99,
+    category: 'Periféricos',
+    inStock: false,
+  },
+  {
+    id: 6,
+    name: 'Headset Gamer',
+    price: 249.9,
+    category: 'Periféricos',
+    inStock: true,
+  },
 ];
-
 function App() {
-  const [filter, setFilter] = useState("");
+  const [filter, setFilter] = useState('');
 
-  function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    setFilter(event.currentTarget.value)
+  function handleFilter(event: ChangeEvent<HTMLInputElement>) {
+    setFilter(event.target.value);
   }
 
-  const filteredItems = useMemo(() => {
-    if (!filter.trim()) return []
+  const productsFiltered = useMemo(() => {
+    if (!filter.trim()) return products;
 
-    return items.filter(item => item.name.toLowerCase().includes(filter.toLowerCase()))
-  }, [filter])
+    return products.filter((product) =>
+      product.name.toLowerCase().includes(filter.toLowerCase())
+    );
+  }, [filter]);
+
+  function handleMoneyFormat(number: number) {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    }).format(number);
+  }
 
   return (
-    <>
-      <input type="text" value={filter} onChange={handleChange} />
+    <div>
+      <input
+        type="text"
+        value={filter}
+        onChange={handleFilter}
+        placeholder="Filtrar produtos..."
+      />
 
-      <ul>
-        {filteredItems.map(item => (<li key={item.id}>{item.name}</li>))}
-      </ul>
-    </>
-  )
+      {productsFiltered.length > 0 ? (
+        <ul>
+          {productsFiltered.map((product) => (
+            <li key={product.id}>
+              <strong>{product.name}</strong> -
+              {handleMoneyFormat(product.price)}-{product.category} -
+              {product.inStock ? 'Em estoque' : 'Fora de estoque'}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <span> Produto não encontrado! </span>
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
