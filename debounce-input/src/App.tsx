@@ -1,4 +1,4 @@
-import { useMemo, useState, type ChangeEvent } from 'react';
+import { useMemo, useRef, useState, type ChangeEvent } from 'react';
 
 const products = [
   {
@@ -44,11 +44,36 @@ const products = [
     inStock: true,
   },
 ];
+
+function useDebounce<T extends (...args: unknown[]) => void>(
+  func: T ,
+  delay: number): T {
+
+  const timeoutRef = useRef<number | undefined>(undefined)
+
+  function debouncedFunction(...args: Parameters<T>) {
+    window.clearTimeout(timeoutRef.current)
+
+    timeoutRef.current = window.setTimeout(() => {
+      func(...args)
+    }, delay)
+  }
+
+  return debouncedFunction as T
+}
+
 function App() {
   const [filter, setFilter] = useState('');
 
+  const debouncedFilter = useDebounce(updateFilter, 500)
+
   function handleFilter(event: ChangeEvent<HTMLInputElement>) {
-    setFilter(event.target.value);
+    setFilter(event.currentTarget.value);
+    debouncedFilter(event.currentTarget.value)
+  }
+
+  function updateFilter(value: string) {
+    setFilter(value);
   }
 
   const productsFiltered = useMemo(() => {
@@ -62,7 +87,7 @@ function App() {
   function handleMoneyFormat(number: number) {
     return new Intl.NumberFormat('pt-BR', {
       style: 'currency',
-      currency: 'BRL',
+      currency: 'BRL'
     }).format(number);
   }
 
