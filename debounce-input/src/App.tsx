@@ -45,7 +45,8 @@ const products = [
   },
 ];
 
-function useDebounce<T extends (...args: unknown[]) => void>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function useDebounce<T extends (...args: any[]) => void>(
   func: T ,
   delay: number): T {
 
