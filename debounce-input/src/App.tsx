@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type ChangeEvent } from 'react';
+import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
 
 const products = [
   {
@@ -45,45 +45,37 @@ const products = [
   },
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function useDebounce<T extends (...args: any[]) => void>(
-  func: T ,
-  delay: number): T {
+function useDebounce<T>(value: T, delay = 500) {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
-  const timeoutRef = useRef<number | undefined>(undefined)
-
-  function debouncedFunction(...args: Parameters<T>) {
-    window.clearTimeout(timeoutRef.current)
-
-    timeoutRef.current = window.setTimeout(() => {
-      func(...args)
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedValue(value)
     }, delay)
-  }
 
-  return debouncedFunction as T
+    return () => clearTimeout(timeout)
+  }, [value, delay])
+
+  return debouncedValue
 }
 
 function App() {
   const [filter, setFilter] = useState('');
 
-  const debouncedFilter = useDebounce(updateFilter, 500)
+  const debouncedFilter = useDebounce(filter)
+
 
   function handleFilter(event: ChangeEvent<HTMLInputElement>) {
     setFilter(event.currentTarget.value);
-    debouncedFilter(event.currentTarget.value)
-  }
-
-  function updateFilter(value: string) {
-    setFilter(value);
   }
 
   const productsFiltered = useMemo(() => {
-    if (!filter.trim()) return products;
+    if (!debouncedFilter.trim()) return products;
 
     return products.filter((product) =>
-      product.name.toLowerCase().includes(filter.toLowerCase())
+      product.name.toLowerCase().includes(debouncedFilter.toLowerCase())
     );
-  }, [filter]);
+  }, [debouncedFilter]);
 
   function handleMoneyFormat(number: number) {
     return new Intl.NumberFormat('pt-BR', {
@@ -93,7 +85,7 @@ function App() {
   }
 
   return (
-    <div>
+    <div style={{display: "flex", flexDirection: "column", gap: "8px", width: "10%"}}>
       <input
         type="text"
         value={filter}
@@ -101,18 +93,18 @@ function App() {
         placeholder="Filtrar produtos..."
       />
 
-      {productsFiltered.length > 0 ? (
-        <ul>
-          {productsFiltered.map((product) => (
-            <li key={product.id}>
-              <strong>{product.name}</strong> -
-              {handleMoneyFormat(product.price)}-{product.category} -
-              {product.inStock ? 'Em estoque' : 'Fora de estoque'}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <span> Produto não encontrado! </span>
+      {productsFiltered.length > 0 && (filter !== "" && debouncedFilter === "") ? (
+        <span>Carregando...</span>
+      ) : (productsFiltered.length > 0 ? (<ul>
+        {productsFiltered.map((product) => (
+          <li key={product.id}>
+            <strong>{product.name}</strong> -
+            {handleMoneyFormat(product.price)}-{product.category} -
+            {product.inStock ? 'Em estoque' : 'Fora de estoque'}
+          </li>
+        ))}
+      </ul>) :
+        (<span> Produto não encontrado! </span>)
       )}
     </div>
   );
