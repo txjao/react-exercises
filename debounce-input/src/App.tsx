@@ -85,7 +85,7 @@ function App() {
   }
 
   return (
-    <div style={{display: "flex", flexDirection: "column", gap: "8px", width: "10%"}}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "20%" }}>
       <input
         type="text"
         value={filter}
@@ -97,10 +97,13 @@ function App() {
         <span>Carregando...</span>
       ) : (productsFiltered.length > 0 ? (<ul>
         {productsFiltered.map((product) => (
-          <li key={product.id}>
-            <strong>{product.name}</strong> -
-            {handleMoneyFormat(product.price)}-{product.category} -
-            {product.inStock ? 'Em estoque' : 'Fora de estoque'}
+          <li key={product.id} style={{ display: "flex", flexDirection: "column", gap: "2px", marginBottom: "8px" }}>
+            <div style={{ display: "flex", flexWrap: "nowrap"}}>
+              <strong>{product.name + "-"}</strong>
+              <span>{product.category}</span>
+            </div>
+            <span>{handleMoneyFormat(product.price)}</span>
+            <span>{product.inStock ? 'Em estoque' : 'Fora de estoque'}</span>
           </li>
         ))}
       </ul>) :
