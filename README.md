@@ -1,1 +1,1 @@
-Some React studys and exercises!
+## Some React studys and exercises!
