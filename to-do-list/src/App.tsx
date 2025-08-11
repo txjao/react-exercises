@@ -40,11 +40,15 @@ function App() {
           <li
             key={task.id}
             style={{ marginBottom: "8px" }}
-          >{task.title + " - " + task.id}
+          >
+            {task.title + " - " + task.id}
+
             <button
               onClick={() => deleteTask(task)}
               style={{ marginLeft: "8px" }}
-            > X </button>
+            >
+              X
+            </button>
           </li>
         ))}
       </ul>
