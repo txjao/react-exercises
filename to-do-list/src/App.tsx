@@ -8,6 +8,7 @@ interface Task {
 function App() {
   const [inputValue, setInputValue] = useState("")
   const [tasks, setTask] = useState<Task[]>([])
+
   function addTask(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -37,7 +38,7 @@ function App() {
       <ul>
         {tasks.map((task) => (
           <li
-            key={task.title}
+            key={task.id}
             style={{ marginBottom: "8px" }}
           >{task.title + " - " + task.id}
             <button
