@@ -1,16 +1,17 @@
 import { createContext, useContext } from "react"
 
+export type Theme = 'light' | 'dark'
+
 export interface ThemeContextProps {
-  theme: 'light' | 'dark'
-  toogleTheme: () => void
+  theme: Theme,
+  toggleTheme: () => void
 }
 
-const ThemeContext = createContext<ThemeContextProps>({
+export const ThemeContext = createContext<ThemeContextProps>({
   theme: 'light',
-  toogleTheme: () => { }
+  toggleTheme: () => { }
 })
 
-export function useTheme() {
+export function useThemeContext() {
   return useContext(ThemeContext)
 }
-
