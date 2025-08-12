@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { ThemeButton } from "./components/ThemeButton/ThemeButton"
-import { ThemeContext, type Theme, type ThemeContextProps } from "./contexts/ThemeContext"
+import { ThemeContext, type Theme, type IThemeContext } from "./contexts/ThemeContext"
 import { ThemeBanner } from "./components/ThemeBanner/ThemeBanner"
 
 
@@ -12,7 +12,7 @@ function App() {
     setTheme(prevState => prevState === 'light' ? 'dark' : 'light')
   }
 
-  const themeContextValue: ThemeContextProps = {
+  const themeContextValue: IThemeContext = {
     theme: theme,
     toggleTheme: toggleTheme
   }
@@ -23,7 +23,6 @@ function App() {
         <ThemeButton />
         <ThemeBanner />
       </ThemeContext.Provider>
-
     </>
   )
 }

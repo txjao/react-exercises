@@ -2,12 +2,12 @@ import { createContext, useContext } from "react"
 
 export type Theme = 'light' | 'dark'
 
-export interface ThemeContextProps {
+export interface IThemeContext {
   theme: Theme,
   toggleTheme: () => void
 }
 
-export const ThemeContext = createContext<ThemeContextProps>({
+export const ThemeContext = createContext<IThemeContext>({
   theme: 'light',
   toggleTheme: () => { }
 })
